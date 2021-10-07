@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>Upload File</title>
+  <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  
+</head>
+
+<body style="background: #000;">
+ <div class="login">
+	<h1>Solubility prediction</h1>
+        
+     <!-- Main Input For Receiving Query to our ML -->
+     {{msg}}
+    <form  action="/upload_file" method="POST" enctype ="multipart/form-data">
+            <input type = "file" name ="file_name" >
+            <button type="submit" class="btn btn-primary btn-block btn-large">SUBMIT</button>
+         </form>
+        <p> {{message}} </p>
+   <br>
+   <br>
+ </div>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>Solubility Prediction</title>
+  <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body style="background: #000;">
+    <div class="login">
+
+      <label for="solvent-names">Choose a Solvent for prediction:</label>
+      <select name="solvent-names" id="solvent-names">
+       <option value="Aqueous">Aqueous</option>
+       <option value="Ethanol">Ethanol</option>
+       <option value="Benzene">Benzene</option>
+       <option value="Acetone">Acetone</option>
+    </select><br>
+      <h4>Solubility prediction</h4>
+        <h6> Please Enter strings <h6>
+     <!-- Main Input For Receiving Query to our ML -->
+    <form action="/predict" method="post">
+        <input type="text" name="smiles" placeholder="enter SMILES" required="required" />
+        <button type="submit" class="btn btn-primary btn-block btn-large">Predict LogS</button>
+        {{ prediction_text }} {{msg}}
+    </form>
+        
+        <h12> Please Click on upload file  button <h12>
+        <form action="/upload_file" method="get">
+  
+        <button type="Upload" class="btn btn-primary btn-block btn-large">Upload file</button>
+    </form>
+   <br>
+   <br>
+ </div>
+</body>
+</html>
