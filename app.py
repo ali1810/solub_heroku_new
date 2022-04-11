@@ -127,9 +127,10 @@ def predict():
         smiles = request.form["smiles"]
         #print(smiles)
     predOUT = predictSingle(smiles, model)
+    predOUT=10**predOUT
     #predOUT = predOUT +0.20
 
-    return render_template('sub.html', prediction_text = "The log S is {}".format(predOUT))
+    return render_template('sub.html', prediction_text = "The Gram/liter is {}".format(predOUT))
     #return render_template('sub.html',resu= "The log S is {}".format(predOUT))  
 def generate(smiles):
     moldata = []
@@ -192,8 +193,9 @@ def upload_file():
         descriptors =generate(data)
         descriptors =np.array(descriptors) 
         preds=model.predict(descriptors)
+        preds=10**preds
         #print(preds)
-        data1=pd.DataFrame(preds, columns=['Predictions']) 
+        data1=pd.DataFrame(preds, columns=['Predictions -Gram/Liter ']) 
         #data['Predictions'] = preds
         result = pd.concat([data, data1], axis=1)
         filepath=os.path.join('static','out'+'.csv')
