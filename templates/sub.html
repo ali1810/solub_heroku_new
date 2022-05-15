@@ -31,17 +31,18 @@
      <!-- Main Input For Receiving Query to our ML -->
     <form action="/predict" method="post">
         <input type="text" name="smiles" placeholder="enter SMILES" required="required" />
-        <button type="submit" class="btn btn-primary btn-block btn-large">Predict Solubility - Gram/Liter</button>
-        {{ prediction_text }} {{select}}
+        <button type="submit" class="btn btn-primary btn-block btn-large">Predict the solubility </button>
+        {{ prediction_text }} 
+        <h4> .................... <h4>
+        {{ prediction_text1 }}
     </form>
-        
-        <h10> Please Click on upload file  button <h10>
+        <h4> Please Click on upload file  button <h4>
         <form action="/upload_file" method="get">
-  
+            
         <button type="Upload" class="btn btn-primary btn-block btn-large">Upload file</button>
     </form>
    <br>
    <br>
- </div>
+   </div>
 </body>
 </html>
