@@ -1,4 +1,5 @@
 
+
 # run it with:
 # python3 app.py
 
@@ -98,7 +99,7 @@ def predictSingle(smiles, model):
 def index():
     return render_template(
         'sub.html',
-        data=[{'name':'Aquesous'}, {'name':'Ethanol'}, {'name':'Benzene'},{'name':'Acetone'}])
+        data=[{'name':'Aqueous'}, {'name':'Ethanol'}, {'name':'Benzene'},{'name':'Acetone'}])
 
 @app.route("/test" , methods=['GET', 'POST'])
 def test(): 
@@ -107,7 +108,7 @@ def test():
     global model 
     select = request.form.get('comp_select')
     select = str(select)
-    if select =='Aquesous':
+    if select =='Aqueous':
         model=pickle.load(open('finalized_model_96_new.pkl', 'rb'))
     elif select =='Ethanol':
         model=pickle.load(open('finalized_model_ethanol_98%.pkl', 'rb'))
@@ -127,11 +128,12 @@ def predict():
         smiles = request.form["smiles"]
         #print(smiles)
     predOUT = predictSingle(smiles, model)
-    predOUT=10**predOUT
-    #predOUT = predOUT +0.20
+    predOUT1 = 10**predOUT 
 
-    return render_template('sub.html', prediction_text = "The Gram/liter is {}".format(predOUT))
-    #return render_template('sub.html',resu= "The log S is {}".format(predOUT))  
+    return render_template('sub.html', prediction_text = "The solubility in log S is {}".format(predOUT),
+    prediction_text1= "The solubility in Gram/Liter is {}".format(predOUT1)) 
+              
+    return render_template('sub.html',prediction_text1= "The Solubility in Gram/Liter is {}".format(predOUT1))  
 def generate(smiles):
     moldata = []
     for elem in smiles:
@@ -188,20 +190,27 @@ def upload_file():
         #return render_template("upload_file.html",msg="File has been uploaded")
         data = pd.read_csv(os.path.join(app.config['UPLOAD_PATH'], f.filename))
         #print(data)
-        data=data.smiles
+        data=data.SMILES
+        #data1 = data.LogS
+
+        #data1=data.Solubility
+        #print(data1)
         #loaded_model= pickle.load(open('/content/drive/MyDrive/KIT/finalized_model_96_new.pkl', 'rb'))
         descriptors =generate(data)
         descriptors =np.array(descriptors) 
         preds=model.predict(descriptors)
-        preds=10**preds
+        preds1=10**preds
         #print(preds)
-        data1=pd.DataFrame(preds, columns=['Predictions -Gram/Liter ']) 
+        data2=pd.DataFrame(preds, columns=['Predictions in logS']) 
+        data3=pd.DataFrame(preds1, columns=['Predictions in Gram/liter']) 
+        #data4=pd.DataFrame(data4,columns=['Measured LogS'])
         #data['Predictions'] = preds
-        result = pd.concat([data, data1], axis=1)
-        filepath=os.path.join('static','out'+'.csv')
+        result = pd.concat([data,data2,data3], axis=1)
+        filepath=os.path.join('static','result' +'.csv')
         result.to_csv(filepath)
         return send_file(filepath, as_attachment=True)
     return render_template("upload_file.html", msg="Please choose a 'csv' file with smiles")    
 if __name__ == "__main__":
     app.run(debug=True, port=7000)
+
 
