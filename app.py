@@ -12,7 +12,6 @@ import requests
 from bs4 import BeautifulSoup
 import pubchempy as pcp
 
-
 import numpy as np
 import pandas as pd
 from rdkit import rdBase   
@@ -39,19 +38,19 @@ def getAromaticProportion(m):
     heavy_atom = Lipinski.HeavyAtomCount(m)
     return aromatic / heavy_atom
 def smiles_to_sol(SMILES):
-   prop=pcp.get_properties([ 'MolecularWeight'], SMILES, 'smiles')
-   x = list(map(lambda x: x["CID"], prop))
-   y=x[0]
+    prop=pcp.get_properties([ 'MolecularWeight'], SMILES, 'smiles')
+    x = list(map(lambda x: x["CID"], prop))
+    y=x[0]
    #print(y)
-   x = "https://pubchem.ncbi.nlm.nih.gov/rest/pug_view/data/compound/%s/xml"
+    x = "https://pubchem.ncbi.nlm.nih.gov/rest/pug_view/data/compound/%s/xml"
 #("https://pubchem.ncbi.nlm.nih.gov/rest/pug_view/data/compound/y/xml")
-   data=requests.get(x % y)
-   html = BeautifulSoup(data.content, "xml")
-   solubility = html.find(name='TOCHeading', string='Solubility')
-   if solubility ==None:
+    data=requests.get(x % y)
+    html = BeautifulSoup(data.content, "xml")
+    solubility = html.find(name='TOCHeading', string='Solubility')
+    if solubility ==None:
       return None
 #sol.append(solub)
-   else:
+    else:
       solub=solubility.find_next_sibling('Information').find(name='String').string
       return solub
 
@@ -145,19 +144,26 @@ def test():
 def predict():
     if request.method == "POST":
         smiles = request.form["smiles"]
-        #print(smiles)
+        print(smiles)
     predOUT = predictSingle(smiles, model)
     predOUT1 = 10**predOUT 
+    mol = Chem.MolFromSmiles(smiles)
+
+    # calculate the molecular weight descriptor
+    single_MolWt   = Descriptors.MolWt(mol)
+    predOUT2 = (10**predOUT)*single_MolWt
     expOUT2  = smiles_to_sol(smiles)
-
+    print(expOUT2)
+ 
+    return render_template('sub.html', 
+    prediction_text = "The solubility in LogS is {}".format(predOUT),
+    prediction_text1= "The solubility in Mol/Liter is {}".format(predOUT1),
+    prediction_text2= "The solubility in Gram/Liter is {}".format(predOUT2),
+    prediction_text3= "The Experimented solubility from Pubchem is {}".format(expOUT2))          
     
-
-    return render_template('sub.html', prediction_text = "The solubility in LogS is {}".format(predOUT),
-    prediction_text1= "The solubility in Mol/Liter is {}".format(predOUT1)) 
-              
     return render_template('sub.html',prediction_text1= "The Solubility in Mol/Liter is {}".format(predOUT1))
-    return render_template('sub.html',prediction_text2= "The Solubility in Mol/Liter is {}".format(expOUT2))  
-
+    return render_template('sub.html',prediction_text2= "The Solubility in Gram/Liter is {}".format(predOUT1))
+ 
 def generate(smiles):
     moldata = []
     for elem in smiles:
@@ -196,7 +202,6 @@ def generate(smiles):
 
     return descriptors
 
-
 app.config["UPLOAD_PATH"]=  'static'
 app.config["DOWNLOAD_PATH"]='C:/Users/ali/Desktop/solub_herokuu-main/static/downloads'
 @app.route('/upload_file', methods=["GET", "POST"])
@@ -225,15 +230,12 @@ def upload_file():
         descriptors =np.array(descriptors) 
         preds=model.predict(descriptors)
         preds1=10**preds
-        sol_exp_pub=smiles_to_sol(data)
         #print(preds)
         data2=pd.DataFrame(preds, columns=['Predictions in logS']) 
-        data3=pd.DataFrame(preds1, columns=['Predictions in Mol/liter'])
-        data4=pd.DataFrame(sol_exp_pub, columns=['Experiment Solubility values from Pubchem ']) 
-
+        data3=pd.DataFrame(preds1, columns=['Predictions in Gram/liter']) 
         #data4=pd.DataFrame(data4,columns=['Measured LogS'])
         #data['Predictions'] = preds
-        result = pd.concat([data,data2,data3,data4], axis=1)
+        result = pd.concat([data,data2,data3], axis=1)
         filepath=os.path.join('static','result' +'.csv')
         result.to_csv(filepath)
         return send_file(filepath, as_attachment=True)
