@@ -161,8 +161,8 @@ def predict():
     prediction_text2= "The solubility in Gram/Liter is {}".format(predOUT2),
     prediction_text3= "The Experimented solubility from Pubchem is {}".format(expOUT2))          
     
-    return render_template('sub.html',prediction_text1= "The Solubility in Mol/Liter is {}".format(predOUT1))
-    return render_template('sub.html',prediction_text2= "The Solubility in Gram/Liter is {}".format(predOUT1))
+    #return render_template('sub.html',prediction_text1= "The Solubility in Mol/Liter is {}".format(predOUT1))
+    #return render_template('sub.html',prediction_text2= "The Solubility in Gram/Liter is {}".format(predOUT1))
  
 def generate(smiles):
     moldata = []
