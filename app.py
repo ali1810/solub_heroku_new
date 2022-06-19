@@ -153,7 +153,7 @@ def predict():
     single_MolWt   = Descriptors.MolWt(mol)
     predOUT2 = (10**predOUT)*single_MolWt
     expOUT2  = smiles_to_sol(smiles)
-    print(expOUT2)
+    #print(expOUT2)
  
     return render_template('sub.html', 
     prediction_text = "The solubility in LogS is {}".format(predOUT),
