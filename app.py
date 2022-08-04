@@ -1,5 +1,4 @@
 
-
 # run it with:
 # python3 app.py
 
@@ -116,7 +115,7 @@ def predictSingle(smiles, model):
 @app.route('/')
 def index():
     return render_template(
-        'sub.html',
+        'sub1.html',
         data=[{'name':'Aqueous'}, {'name':'Ethanol'}, {'name':'Benzene'},{'name':'Acetone'}])
 
 @app.route("/test" , methods=['GET', 'POST'])
@@ -153,13 +152,18 @@ def predict():
     single_MolWt   = Descriptors.MolWt(mol)
     predOUT2 = (10**predOUT)*single_MolWt
     expOUT2  = smiles_to_sol(smiles)
-    #print(expOUT2)
+    print(expOUT2)
  
-    return render_template('sub.html', 
-    prediction_text = "The solubility in LogS is {}".format(predOUT),
-    prediction_text1= "The solubility in Mol/Liter is {}".format(predOUT1),
-    prediction_text2= "The solubility in Gram/Liter is {}".format(predOUT2),
-    prediction_text3= "The Experimented solubility from Pubchem is {}".format(expOUT2))          
+    return render_template('sub1.html',
+   
+    prediction_text = "{}".format("%.2f" % predOUT),
+    prediction_text1= "{}".format("%.4f" % predOUT1),
+    prediction_text2= "{}".format("%.2f" % predOUT2),
+    prediction_text3= "{}".format(expOUT2))
+    #prediction_text  = predOUT
+    #prediction_text1 = predOUT1
+    #prediction_text2 = predOUT2
+    #prediction_text3 = expOUT2)         
     
     #return render_template('sub.html',prediction_text1= "The Solubility in Mol/Liter is {}".format(predOUT1))
     #return render_template('sub.html',prediction_text2= "The Solubility in Gram/Liter is {}".format(predOUT1))
@@ -242,5 +246,3 @@ def upload_file():
     return render_template("upload_file.html", msg="Please choose a 'csv' file with smiles")    
 if __name__ == "__main__":
     app.run(debug=True, port=7000)
-
-
